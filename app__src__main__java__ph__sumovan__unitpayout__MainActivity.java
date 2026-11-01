@@ -48,6 +48,7 @@ public class MainActivity extends Activity {
     private static final int REQ_FILE = 11;
     private static final String HOOK_JS =
         "(function(){if(window.__sumoHook)return;window.__sumoHook=1;"
+      + "try{if(location.hostname==='script.google.com'){var st=document.createElement('style');st.textContent='#warning,.warning-bar{display:none!important}';document.documentElement.appendChild(st)}}catch(e){}"
       + "function done(n,b){var fr=new FileReader();fr.onload=function(){var s=String(fr.result);SumoApp.saveFile(n,b.type||'application/pdf',s.substring(s.indexOf(',')+1))};fr.readAsDataURL(b)}"
       + "function xhr(h,n){var x=new XMLHttpRequest();x.open('GET',h);x.responseType='blob';x.onload=function(){done(n,x.response)};"
       + "x.onerror=function(){SumoApp.toast('Could not save the PDF. Please try again.')};x.send()}"
