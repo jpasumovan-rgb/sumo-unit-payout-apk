@@ -13,8 +13,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Unpack the app folder
-        run: if [ ! -d app ]; then unzip -q app.zip; fi
+      - name: Rebuild the app folder
+        run: |
+          if [ ! -d app ]; then
+            for f in app__*; do p="${f//__//}"; mkdir -p "$(dirname "$p")"; mv "$f" "$p"; done
+          fi
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
