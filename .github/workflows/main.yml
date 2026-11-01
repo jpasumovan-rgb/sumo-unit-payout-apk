@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Unpack the app folder
+        run: if [ ! -d app ]; then unzip -q app.zip; fi
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
