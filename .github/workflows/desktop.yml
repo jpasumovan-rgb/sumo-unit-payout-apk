@@ -1,0 +1,39 @@
+name: Build Desktop App
+
+on:
+  push:
+    branches: [main]
+    paths: ['desktop/**', '.github/workflows/desktop.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Make the icon
+        working-directory: desktop
+        shell: pwsh
+        run: '[IO.File]::WriteAllBytes("$PWD\icon.png", [Convert]::FromBase64String((Get-Content icon.b64 -Raw).Trim()))'
+      - name: Install
+        working-directory: desktop
+        run: npm install --no-audit --no-fund
+      - name: Build the Windows installer
+        working-directory: desktop
+        run: npx electron-builder --win nsis --publish never
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - name: Publish download link (release "desktop")
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: desktop
+          name: SUMO Unit Payout (Windows desktop app)
+          body: "Windows desktop app. Download SUMO-Unit-Payout-Setup.exe below and open it."
+          files: desktop/dist/SUMO-Unit-Payout-Setup.exe
+          make_latest: false
